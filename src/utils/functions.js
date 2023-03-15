@@ -12,14 +12,28 @@ const getAllTalkers = async () => {
 const pushTalker = async (newTalker) => {
   try {
     const allTalkers = JSON.stringify([newTalker]);
-    console.log(allTalkers);
     await writeFile('src/talker.json', allTalkers);
   } catch (error) {
     console.error(`Erro na escrita no arquivo ${error}`);
   }
 };
 
+const createObject = (param, id) => {
+  const { name, age, talk: { watchedAt, rate } } = param;
+  const autoIncrementId = id;
+  return {
+    name,
+    age,
+    id: autoIncrementId,
+    talk: {
+      watchedAt,
+      rate,
+    },
+  };
+};
+
 module.exports = {
   getAllTalkers,
   pushTalker,
+  createObject,
 };

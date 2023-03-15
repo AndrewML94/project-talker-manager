@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const randomToken = require('random-token');
-const { getAllTalkers, pushTalker } = require('../utils/functions');
+const { getAllTalkers, pushTalker, createObject } = require('../utils/functions');
 const {
   validateTokenExists,
   validateToken,
@@ -53,6 +53,24 @@ validateRateNotNull, validateRate, async (req, res) => {
   pushTalker(newTalker);
 
   res.status(201).json(newTalker);
+});
+
+talkRoute.put('/:id', validateTokenExists, validateToken, validateNameNotNull, validateNameLength,
+validateAgeNotNull, validateAge, validateTalkNotNull, validateWatchedNotNull, validateWatchedFormat,
+validateRateNotNull, validateRate, async (req, res) => {
+  req.headers.authorization = randomToken(16);
+  const { id } = req.params;
+  const allTalkers = await getAllTalkers();
+  const filteredTalker = allTalkers.find((talker) => talker.id === +id);
+  if (!filteredTalker) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+
+  const newTalker = createObject(req.body, +id);
+
+  pushTalker(newTalker);
+  
+  res.status(200).json(newTalker);
 });
 
 module.exports = talkRoute;
