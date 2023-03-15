@@ -17,6 +17,17 @@ const {
 
 const talkRoute = Router();
 
+talkRoute.get('/search', validateTokenExists, validateToken, async (req, res) => {
+  const { q } = req.query;
+  console.log(q);
+  const allTalkers = await getAllTalkers();
+  const filteredTalker = allTalkers.filter((talker) => talker.name.includes(q));
+
+  if (!q) return res.status(200).json(allTalkers);
+
+  return res.status(200).json(filteredTalker);
+});
+
 talkRoute.get('/', async (_req, res) => {
   const allTalkers = await getAllTalkers();
   return res.status(200).json(allTalkers);
