@@ -44,6 +44,19 @@ const talkerRate = (param, allTalkers) => allTalkers
 const talkerDate = (param, allTalkers) => allTalkers
   .filter(({ talk: { watchedAt } }) => watchedAt === param);
 
+const createObjectWithPatch = (param, oldId, ratePatch) => {
+  const { name, age, talk: { watchedAt } } = param;
+  return {
+    name,
+    age,
+    id: +oldId,
+    talk: {
+      rate: ratePatch,
+      watchedAt,
+    },
+  };
+};
+
 module.exports = {
   getAllTalkers,
   pushTalker,
@@ -51,4 +64,5 @@ module.exports = {
   talkerName,
   talkerRate,
   talkerDate,
+  createObjectWithPatch,
 };

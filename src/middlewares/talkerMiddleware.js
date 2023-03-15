@@ -98,7 +98,7 @@ const validateRate = (req, res, next) => {
   });
 };
 
-const validateQueryRoute = (req, res, next) => {
+const validateQueryRate = (req, res, next) => {
   const { rate } = req.query;
 
   if (!rate) return next();
@@ -119,6 +119,26 @@ const validateQueryDate = (req, res, next) => {
   return res.status(400).json({ message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"' });
 };
 
+const validateRatesNotNull = (req, res, next) => {
+  const requireProperties = ['rate'];
+
+  if (requireProperties.every((property) => property in req.body)) {
+    return next();
+  }
+
+  return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
+};
+
+const validateRates = (req, res, next) => {
+  const { rate } = req.body;
+
+  if (rate >= 1 && rate <= 5 && Number.isInteger(rate)) return next();
+
+  return res.status(400).json({
+    message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+  });
+};
+
 module.exports = {
   validateTokenExists,
   validateToken,
@@ -131,6 +151,8 @@ module.exports = {
   validateWatchedFormat,
   validateRateNotNull,
   validateRate,
-  validateQueryRoute,
+  validateQueryRate,
   validateQueryDate,
+  validateRates,
+  validateRatesNotNull,
 };
