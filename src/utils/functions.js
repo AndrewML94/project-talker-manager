@@ -36,8 +36,19 @@ const createObject = (param, id) => {
   };
 };
 
+const talkerName = (param, allTalkers) => allTalkers.filter(({ name }) => name.includes(param));
+
+const talkerRate = (param, allTalkers) => allTalkers
+  .filter(({ talk: { rate } }) => rate === +param);
+
+const talkerDate = (param, allTalkers) => allTalkers
+  .filter(({ talk: { watchedAt } }) => watchedAt === param);
+
 module.exports = {
   getAllTalkers,
   pushTalker,
   createObject,
+  talkerName,
+  talkerRate,
+  talkerDate,
 };

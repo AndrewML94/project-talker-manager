@@ -1,7 +1,14 @@
 const { Router } = require('express');
 const randomToken = require('random-token');
 const { writeFile } = require('fs').promises;
-const { getAllTalkers, pushTalker, createObject } = require('../utils/functions');
+const {
+  getAllTalkers,
+  pushTalker,
+  createObject,
+  talkerName,
+  talkerRate,
+  talkerDate,
+} = require('../utils/functions');
 const {
   validateTokenExists,
   validateToken,
@@ -14,18 +21,22 @@ const {
   validateWatchedFormat,
   validateRateNotNull,
   validateRate,
+  validateQueryRoute,
+  validateQueryDate,
 } = require('../middlewares/talkerMiddleware');
 
 const talkRoute = Router();
 
-talkRoute.get('/search', validateTokenExists, validateToken, async (req, res) => {
-  const { q } = req.query;
-  const allTalkers = await getAllTalkers();
-  const filteredTalker = allTalkers.filter((talker) => talker.name.includes(q));
+talkRoute.get('/search', validateTokenExists, validateToken,
+  validateQueryRoute, validateQueryDate, async (req, res) => {
+  const { q, rate, date } = req.query;
+  let allTalkers = await getAllTalkers();
 
-  if (!q) return res.status(200).json(allTalkers);
+  if (q) allTalkers = talkerName(q, allTalkers);
+  if (rate) allTalkers = talkerRate(rate, allTalkers);
+  if (date) allTalkers = talkerDate(date, allTalkers);
 
-  return res.status(200).json(filteredTalker);
+  return res.status(200).json(allTalkers);
 });
 
 talkRoute.get('/', async (_req, res) => {

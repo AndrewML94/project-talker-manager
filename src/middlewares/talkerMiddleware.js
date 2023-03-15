@@ -73,9 +73,7 @@ const validateWatchedFormat = (req, res, next) => {
   const { watchedAt } = req.body.talk;
   const validator = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/;
 
-  if (validator.test(watchedAt)) {
-    return next();
-  }
+  if (validator.test(watchedAt)) return next();
 
   return res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
 };
@@ -100,6 +98,27 @@ const validateRate = (req, res, next) => {
   });
 };
 
+const validateQueryRoute = (req, res, next) => {
+  const { rate } = req.query;
+
+  if (!rate) return next();
+  if (+rate >= 1 && +rate <= 5 && Number.isInteger(+rate)) return next();
+
+  return res.status(400).json({
+    message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+  });
+};
+
+const validateQueryDate = (req, res, next) => {
+  const { date } = req.query;
+  const validator = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/;
+
+  if (!date) return next();
+  if (validator.test(date)) return next();
+
+  return res.status(400).json({ message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"' });
+};
+
 module.exports = {
   validateTokenExists,
   validateToken,
@@ -112,4 +131,6 @@ module.exports = {
   validateWatchedFormat,
   validateRateNotNull,
   validateRate,
+  validateQueryRoute,
+  validateQueryDate,
 };
