@@ -1,13 +1,13 @@
 const validateTokenExists = (req, res, next) => {
   if (req.headers.authorization) return next();
   
-  res.status(401).json({ message: 'Token não encontrado' }); 
+  return res.status(401).json({ message: 'Token não encontrado' }); 
 };
 
 const validateToken = (req, res, next) => {
   if (req.headers.authorization.length === 16) return next();
   
-  res.status(401).json({ message: 'Token inválido' }); 
+  return res.status(401).json({ message: 'Token inválido' }); 
 };
 
 const validateNameNotNull = (req, res, next) => {
@@ -17,7 +17,7 @@ const validateNameNotNull = (req, res, next) => {
     return next();
   }
 
-  res.status(400).json({ message: 'O campo "name" é obrigatório' });
+  return res.status(400).json({ message: 'O campo "name" é obrigatório' });
 };
 
 const validateNameLength = (req, res, next) => {
@@ -25,7 +25,7 @@ const validateNameLength = (req, res, next) => {
 
   if (name.length >= 3) return next();
 
-  res.status(400).json({ message: 'O "name" deve ter pelo menos 3 caracteres' });
+  return res.status(400).json({ message: 'O "name" deve ter pelo menos 3 caracteres' });
 };
 
 const validateAgeNotNull = (req, res, next) => {
@@ -35,7 +35,7 @@ const validateAgeNotNull = (req, res, next) => {
     return next();
   }
 
-  res.status(400).json({ message: 'O campo "age" é obrigatório' });
+  return res.status(400).json({ message: 'O campo "age" é obrigatório' });
 };
 
 const validateAge = (req, res, next) => {
@@ -43,7 +43,7 @@ const validateAge = (req, res, next) => {
 
   if (age > 18 && Number.isInteger(age)) return next();
 
-  res.status(400).json({
+  return res.status(400).json({
     message: 'O campo "age" deve ser um número inteiro igual ou maior que 18',
   });
 };
@@ -56,7 +56,7 @@ const validateTalkNotNull = (req, res, next) => {
     return next();
   }
 
-  res.status(400).json({ message: 'O campo "talk" é obrigatório' });
+  return res.status(400).json({ message: 'O campo "talk" é obrigatório' });
 };
 
 const validateWatchedNotNull = (req, res, next) => {
@@ -66,7 +66,7 @@ const validateWatchedNotNull = (req, res, next) => {
     return next();
   }
 
-  res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
+  return res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
 };
 
 const validateWatchedFormat = (req, res, next) => {
@@ -77,7 +77,7 @@ const validateWatchedFormat = (req, res, next) => {
     return next();
   }
 
-  res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
+  return res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
 };
 
 const validateRateNotNull = (req, res, next) => {
@@ -87,7 +87,7 @@ const validateRateNotNull = (req, res, next) => {
     return next();
   }
 
-  res.status(400).json({ message: 'O campo "rate" é obrigatório' });
+  return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
 };
 
 const validateRate = (req, res, next) => {
@@ -95,7 +95,7 @@ const validateRate = (req, res, next) => {
 
   if (rate >= 1 && rate <= 5 && Number.isInteger(rate)) return next();
 
-  res.status(400).json({
+  return res.status(400).json({
     message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
   });
 };

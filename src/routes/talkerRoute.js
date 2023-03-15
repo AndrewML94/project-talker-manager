@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const randomToken = require('random-token');
+const { writeFile } = require('fs').promises;
 const { getAllTalkers, pushTalker, createObject } = require('../utils/functions');
 const {
   validateTokenExists,
@@ -19,7 +20,6 @@ const talkRoute = Router();
 
 talkRoute.get('/search', validateTokenExists, validateToken, async (req, res) => {
   const { q } = req.query;
-  console.log(q);
   const allTalkers = await getAllTalkers();
   const filteredTalker = allTalkers.filter((talker) => talker.name.includes(q));
 
@@ -50,20 +50,12 @@ validateAgeNotNull, validateAge, validateTalkNotNull, validateWatchedNotNull, va
 validateRateNotNull, validateRate, async (req, res) => {
   req.headers.authorization = randomToken(16);
   const allTalkers = await getAllTalkers();
-  const { name, age, talk: { watchedAt, rate } } = req.body;
-  const newTalker = {
-    name,
-    age,
-    id: allTalkers.length += 1,
-    talk: {
-      watchedAt,
-      rate,
-    },
-  };
 
-  pushTalker(newTalker);
+  const newTalker = createObject(req.body, allTalkers.length + 1);
 
-  res.status(201).json(newTalker);
+  const lastTalker = await pushTalker(newTalker);
+
+  res.status(201).json(lastTalker);
 });
 
 talkRoute.put('/:id', validateTokenExists, validateToken, validateNameNotNull, validateNameLength,
@@ -89,13 +81,12 @@ talkRoute.delete('/:id', validateTokenExists, validateToken, async (req, res) =>
   req.headers.authorization = randomToken(16);
   const { id } = req.params;
   const allTalkers = await getAllTalkers();
-  const newTalker = allTalkers.splice(id);
+  const deletedTalker = allTalkers.find((talker) => talker.id === +id);
+  const newListTalkers = allTalkers.splice(deletedTalker, 1);
 
-  console.log(newTalker);
-
-  pushTalker(newTalker);
+  writeFile('src/talker.json', JSON.stringify(newListTalkers, null, 2));
   
-  res.status(204).json();
+  res.status(204).json(deletedTalker);
 });
 
 module.exports = talkRoute;

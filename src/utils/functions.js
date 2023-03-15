@@ -11,8 +11,12 @@ const getAllTalkers = async () => {
 
 const pushTalker = async (newTalker) => {
   try {
-    const allTalkers = JSON.stringify([newTalker]);
-    await writeFile('src/talker.json', allTalkers);
+    const allTalkers = await getAllTalkers();
+    allTalkers.push(newTalker);
+    const newAllTalkers = JSON.stringify(allTalkers, null, 2);
+
+    await writeFile('src/talker.json', newAllTalkers);
+    return newTalker;
   } catch (error) {
     console.error(`Erro na escrita no arquivo ${error}`);
   }
@@ -26,8 +30,8 @@ const createObject = (param, id) => {
     age,
     id: oldId,
     talk: {
-      watchedAt,
       rate,
+      watchedAt,
     },
   };
 };
