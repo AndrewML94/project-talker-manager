@@ -1,5 +1,5 @@
 const express = require('express');
-const { talkerRoute, loginRoute } = require('./routes');
+const { talkRoute, loginRoute } = require('./routes');
 
 const app = express();
 app.use(express.json());
@@ -12,7 +12,7 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.use('/talker', talkerRoute);
+app.use('/talker', talkRoute);
 app.use('/login', loginRoute);
 
 app.listen(PORT, () => {
