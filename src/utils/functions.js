@@ -20,11 +20,11 @@ const pushTalker = async (newTalker) => {
 
 const createObject = (param, id) => {
   const { name, age, talk: { watchedAt, rate } } = param;
-  const autoIncrementId = id;
+  const oldId = id;
   return {
     name,
     age,
-    id: autoIncrementId,
+    id: oldId,
     talk: {
       watchedAt,
       rate,

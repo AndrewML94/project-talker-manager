@@ -62,6 +62,7 @@ validateRateNotNull, validateRate, async (req, res) => {
   const { id } = req.params;
   const allTalkers = await getAllTalkers();
   const filteredTalker = allTalkers.find((talker) => talker.id === +id);
+
   if (!filteredTalker) {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
@@ -71,6 +72,19 @@ validateRateNotNull, validateRate, async (req, res) => {
   pushTalker(newTalker);
   
   res.status(200).json(newTalker);
+});
+
+talkRoute.delete('/:id', validateTokenExists, validateToken, async (req, res) => {
+  req.headers.authorization = randomToken(16);
+  const { id } = req.params;
+  const allTalkers = await getAllTalkers();
+  const newTalker = allTalkers.splice(id);
+
+  console.log(newTalker);
+
+  pushTalker(newTalker);
+  
+  res.status(204).json();
 });
 
 module.exports = talkRoute;
