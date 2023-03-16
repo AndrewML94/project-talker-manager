@@ -8,6 +8,8 @@ const {
   talkerRate,
   talkerDate,
   createObjectWithPatch,
+  pushTalkerWitchPatch,
+  createObjectFromDb,
 } = require('../utils/functions');
 const {
   validateTokenExists,
@@ -26,6 +28,7 @@ const {
   validateRates,
   validateRatesNotNull,
 } = require('../middlewares/talkerMiddleware');
+const conn = require('../db/connection');
 
 const talkRoute = Router();
 
@@ -39,6 +42,16 @@ talkRoute.get('/search', validateTokenExists, validateToken,
   if (date) allTalkers = talkerDate(date, allTalkers);
 
   return res.status(200).json(allTalkers);
+});
+
+talkRoute.get('/db', async (_req, res) => {
+  try {
+    const [result] = await conn.execute('SELECT * FROM talkers');
+    res.status(200).json(createObjectFromDb(result));
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.sqlMessage });
+  }
 });
 
 talkRoute.get('/', async (_req, res) => {
@@ -106,7 +119,7 @@ talkRoute.patch('/rate/:id', validateTokenExists, validateToken,
   const allTalkers = await getAllTalkers();
   const filteredTalker = allTalkers.find((talker) => talker.id === +id);
   const newTalkerWithRate = createObjectWithPatch(filteredTalker, id, rate);
-  pushTalker(newTalkerWithRate);
+  pushTalkerWitchPatch(newTalkerWithRate, id);
   
   res.status(204).json(newTalkerWithRate);
 });

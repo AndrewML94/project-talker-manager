@@ -57,6 +57,40 @@ const createObjectWithPatch = (param, oldId, ratePatch) => {
   };
 };
 
+const pushTalkerWitchPatch = async (newTalker, id) => {
+  try {
+    const allTalkers = await getAllTalkers();
+    allTalkers.forEach((elem, index) => {
+      if (elem.id === +id) allTalkers.splice(index, 1, newTalker);
+      return allTalkers;
+    });
+    const newAllTalkers = JSON.stringify(allTalkers, null, 2);
+
+    await writeFile('src/talker.json', newAllTalkers);
+    return newTalker;
+  } catch (error) {
+    console.error(`Erro na escrita no arquivo ${error}`);
+  }
+};
+
+const createObjectFromDb = (paramDb) => {
+  const talkersFromDb = [];
+  
+  paramDb.forEach((talker) => talkersFromDb.push(
+    {
+      name: talker.name,
+      age: talker.age,
+      id: talker.id,
+      talk: {
+        watchedAt: talker.talk_watched_at,
+        rate: talker.talk_rate,
+      },
+    },
+  ));
+
+  return talkersFromDb;
+};
+
 module.exports = {
   getAllTalkers,
   pushTalker,
@@ -65,4 +99,6 @@ module.exports = {
   talkerRate,
   talkerDate,
   createObjectWithPatch,
+  pushTalkerWitchPatch,
+  createObjectFromDb,
 };
